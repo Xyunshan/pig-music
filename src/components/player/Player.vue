@@ -162,7 +162,7 @@
     <!-- 播放器 -->
     <audio
       ref="audio"
-      preload="auto"
+      autoplay="autoplay"
       :src="playUrl"
       @canplay="ready()"
       @error="playerror()"
@@ -437,7 +437,7 @@ export default {
       audio.play();
     },
     togglePlaying() {
-      this.setplaying(!this.playing);
+      this.songReady ? this.setplaying(!this.playing) : this.setplaying(false);
       if (this.lyric) {
         this.lyric.togglePlay();
       }
@@ -454,18 +454,18 @@ export default {
     getLyric() {
       getLyric(this.currentSong.mid).then(res => {
         this.lyric = new Lyric(Base64.decode(res.lyric), this.handleLyric);
-        this.lyric.play();
       });
     },
     // 监听播放歌词的回调函数
     handleLyric({ lineNum, txt }) {
+      // 当前播放到第几行  和内容
       const lyricList = this.$refs.lyricList;
       this.currentLineNum = lineNum;
       if (lineNum > 6) {
         let lineEl = this.$refs.lyricLine[lineNum - 6];
-        lyricList.scrollToElement(lineEl, 1000);
+        lyricList.scrollToElement(lineEl, 600);
       } else {
-        lyricList.scrollTo(0, 0, 1000);
+        lyricList.scrollTo(0, 0, 600);
       }
       this.playingLyric = txt;
     },
@@ -499,7 +499,14 @@ export default {
     // 监听播放暂停
     playing(newPlaying) {
       const audio = this.$refs.audio;
-      newPlaying ? audio.play() : audio.pause();
+      if (newPlaying) {
+        if (this.lyric) {
+          this.lyric.play();
+        }
+        audio.play();
+      } else {
+        audio.pause();
+      }
     }
   }
 };

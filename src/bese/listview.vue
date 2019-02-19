@@ -241,6 +241,10 @@ export default {
     font-size: 14px;
     line-height: 20px;
     background-color: $hbgcolor;
+    .fixed-title {
+      color: $tlftcolor;
+      font-size: 14px;
+    }
   }
 }
 </style>
