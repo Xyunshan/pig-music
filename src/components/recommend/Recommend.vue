@@ -62,7 +62,9 @@ import Loading from "@/bese/loading.vue";
 import { getSlider, getSongSheet } from "@/api/getRecommend";
 import { mapGetters, mapMutations } from "vuex";
 import { createSheet } from "@/common/js/dedail.js";
+import { playlistMixin } from "@/common/js/mixin.js";
 export default {
+  mixins: [playlistMixin],
   created() {
     this._getSlider();
     this._getSongSheet();
@@ -74,6 +76,13 @@ export default {
     };
   },
   methods: {
+    handlePlaylist(playList) {
+      const bottom = playList.length > 0 ? "60px" : "0";
+      if (this.$refs.scroll) {
+        this.$refs.scroll.$el.style.bottom = bottom;
+        this.$refs.scroll.refresh();
+      }
+    },
     // 轮播
     _getSlider() {
       getSlider().then(res => {
@@ -117,8 +126,10 @@ export default {
   width: 100%;
   bottom: 0;
   .scroll {
+    position: absolute;
+    top: 0;
     width: 100%;
-    height: 100%;
+    bottom: 0;
     overflow: hidden;
     .content {
       width: 100%;

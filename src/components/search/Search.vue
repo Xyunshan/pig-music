@@ -41,7 +41,12 @@
       <scroll ref="scroll" :data="songs" class="scroll">
         <div class="song-list">
           <ul class="song-xq" ref="songXq">
-            <li class="song" v-for="song in songs" @click.stop="selectItem(song,0)" :key="song.mid">
+            <li
+              class="song"
+              v-for="song in songs"
+              @click.stop="selectItem(songs,0)"
+              :key="song.mid"
+            >
               <div class="search-img">
                 <img v-lazy="song.image" width="100%">
               </div>
@@ -76,7 +81,11 @@ import { mapActions } from "vuex";
 import transTime from "@/common/js/duration.js";
 // 滚动组件
 import Scroll from "@/bese/scroll.vue";
+import { playlistMixin } from "@/common/js/mixin.js";
+
 export default {
+  mixins: [playlistMixin],
+
   created() {
     this._getHotSearch();
   },
@@ -97,6 +106,18 @@ export default {
     };
   },
   methods: {
+    handlePlaylist(playList) {
+      const bottom = playList.length > 0 ? "60px" : "0";
+      if (this.$refs.scroll) {
+        this.$refs.scroll.$el.style.bottom = bottom;
+        this.$refs.scroll.refresh();
+      }
+    },
+    // 设置提示文字的最小高度
+    setminHeight() {
+      this.$refs.songXq.style["min-height"] = `${this.$refs.scroll.$el
+        .clientHeight - 30}px`;
+    },
     duration(sd) {
       return transTime(sd);
     },
@@ -167,8 +188,8 @@ export default {
       console.log(this.songs);
     },
     // 传入当前歌曲列表信息和点击的索引
-    selectItem(song, index) {
-      let songlist = [song];
+    selectItem(songs, index) {
+      let songlist = songs.slice();
       this.selectPlay({ list: songlist, index });
     },
     ...mapActions(["selectPlay"])
@@ -311,7 +332,9 @@ export default {
     width: 100%;
     background-color: $bgcolor;
     .scroll {
-      height: 100%;
+      position: absolute;
+      top: 0;
+      bottom: 0;
       width: 100%;
       overflow: hidden;
     }

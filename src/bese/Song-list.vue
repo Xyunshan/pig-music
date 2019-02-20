@@ -31,7 +31,10 @@ import transTime from "@/common/js/duration.js";
 import { mapActions } from "vuex";
 // 滚动组件
 import Scroll from "@/bese/scroll.vue";
+import { playlistMixin } from "@/common/js/mixin.js";
 export default {
+  mixins: [playlistMixin],
+
   mounted() {
     this.setminHeight();
   },
@@ -42,6 +45,13 @@ export default {
     }
   },
   methods: {
+    handlePlaylist(playList) {
+      const bottom = playList.length > 0 ? "60px" : "0";
+      if (this.$refs.scroll) {
+        this.$refs.scroll.$el.style.bottom = bottom;
+        this.$refs.scroll.refresh();
+      }
+    },
     duration(sd) {
       return transTime(sd);
     },

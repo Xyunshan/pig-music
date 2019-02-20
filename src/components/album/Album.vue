@@ -58,7 +58,11 @@ import { getAlbum } from "@/api/getAlbum.js";
 import { createAlbum } from "@/common/js/album.js";
 import { mapGetters, mapMutations } from "vuex";
 import { createAlbumlist } from "@/common/js/dedail.js";
+import { playlistMixin } from "@/common/js/mixin.js";
+
 export default {
+  mixins: [playlistMixin],
+
   created() {
     this._getAlbum();
   },
@@ -92,6 +96,13 @@ export default {
     };
   },
   methods: {
+    handlePlaylist(playList) {
+      const bottom = playList.length > 0 ? "60px" : "0";
+      if (this.$refs.scroll) {
+        this.$refs.scroll.$el.style.bottom = bottom;
+        this.$refs.scroll.refresh();
+      }
+    },
     loadMore() {
       if (this.page >= this.total) {
         return;
@@ -207,8 +218,10 @@ export default {
     bottom: 0;
     width: 100%;
     .scroll {
-      height: 100%;
+      position: absolute;
+      top: 0;
       width: 100%;
+      bottom: 0;
       overflow: hidden;
       .album-content {
         width: 98%;

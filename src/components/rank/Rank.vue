@@ -31,7 +31,11 @@ import { getRank } from "@/api/getRank.js";
 import Scroll from "@/bese/scroll.vue";
 import { createRank } from "@/common/js/dedail.js";
 import { mapGetters, mapMutations } from "vuex";
+import { playlistMixin } from "@/common/js/mixin.js";
+
 export default {
+  mixins: [playlistMixin],
+
   created() {
     this._getRank();
   },
@@ -41,6 +45,13 @@ export default {
     };
   },
   methods: {
+    handlePlaylist(playList) {
+      const bottom = playList.length > 0 ? "60px" : "0";
+      if (this.$refs.scroll) {
+        this.$refs.scroll.$el.style.bottom = bottom;
+        this.$refs.scroll.refresh();
+      }
+    },
     _getRank() {
       getRank().then(res => {
         if (res.code === 0) {
@@ -76,7 +87,9 @@ export default {
   bottom: 0;
   background-color: $bgcolor;
   .scroll {
-    height: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
     width: 100%;
     overflow: hidden;
   }

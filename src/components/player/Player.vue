@@ -264,6 +264,9 @@ export default {
       this.currentTime = parseInt(
         (offsetWidth / this.touch.pwdWidth) * this.currentSong.duration
       );
+      if (this.lyric) {
+        this.lyric.seek(this.currentTime * 1000);
+      }
     },
     progerssTouchmove(e) {
       if (!this.touch.initiated) {
@@ -286,9 +289,9 @@ export default {
     progerssTouchend() {
       this.touch.initiated = false;
       this.$refs.audio.currentTime = this.currentTime;
-      if (this.lyric) {
-        this.lyric.seek(this.currentTime * 1000);
-      }
+      // if (this.lyric) {
+      //   this.lyric.seek(this.currentTime * 1000);
+      // }
     },
     // 设置进度条
     _offset(offsetWidth) {
@@ -454,6 +457,9 @@ export default {
     getLyric() {
       getLyric(this.currentSong.mid).then(res => {
         this.lyric = new Lyric(Base64.decode(res.lyric), this.handleLyric);
+        if (this.lyric) {
+          this.lyric.play();
+        }
       });
     },
     // 监听播放歌词的回调函数
@@ -499,14 +505,7 @@ export default {
     // 监听播放暂停
     playing(newPlaying) {
       const audio = this.$refs.audio;
-      if (newPlaying) {
-        if (this.lyric) {
-          this.lyric.play();
-        }
-        audio.play();
-      } else {
-        audio.pause();
-      }
+      newPlaying ? audio.play() : audio.pause();
     }
   }
 };
@@ -866,6 +865,7 @@ export default {
       }
       .play-lrc {
         font-size: 12px;
+        color: $ftcolor;
       }
     }
     .min-cd {

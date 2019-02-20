@@ -13,13 +13,13 @@ export const playlistMixin = {
     this.handlePlaylist(this.playList)
   },
   watch: {
-    playlist(newVal) {
+    playList(newVal) {
       this.handlePlaylist(newVal)
     }
   },
   methods: {
-    handlePlaylist() {
-      throw new Error('component must implement handlePlaylist method')
+    handlePlaylist(newVal) {
+      throw new Error('component must implement handlePlaylist method:请实现 handlePlaylist 函数')
     }
   }
 }

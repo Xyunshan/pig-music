@@ -52,9 +52,13 @@
 import Scroll from "@/bese/scroll.vue";
 import { mapGetters, mapMutations } from "vuex";
 import { createSinger } from "@/common/js/dedail.js";
+import { playlistMixin } from "@/common/js/mixin.js";
+
 const ANCHOR_HEIGT = 20;
 const TITLE_HEIGHT = 20;
 export default {
+  mixins: [playlistMixin],
+
   created() {
     this.touch = {};
     this.listenScroll = true;
@@ -83,6 +87,13 @@ export default {
     }
   },
   methods: {
+    handlePlaylist(playList) {
+      const bottom = playList.length > 0 ? "60px" : "0";
+      if (this.$refs.listview) {
+        this.$refs.listview.$el.style.bottom = bottom;
+        this.$refs.listview.refresh();
+      }
+    },
     onShort(e) {
       let anchorIndex = e.target.getAttribute("data-index");
       // 获取点击时的位置
@@ -164,7 +175,10 @@ export default {
   width: 100%;
   background-color: $bgcolor;
   .scroll {
-    height: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
     overflow: hidden;
   }
   .singer-list {
