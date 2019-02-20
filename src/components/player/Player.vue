@@ -264,9 +264,6 @@ export default {
       this.currentTime = parseInt(
         (offsetWidth / this.touch.pwdWidth) * this.currentSong.duration
       );
-      if (this.lyric) {
-        this.lyric.seek(this.currentTime * 1000);
-      }
     },
     progerssTouchmove(e) {
       if (!this.touch.initiated) {
@@ -307,6 +304,9 @@ export default {
         this.currentTime = audio.currentTime;
       }
       this._offset(offsetWidth);
+      if (this.lyric) {
+        this.lyric.seek(this.currentTime * 1000);
+      }
     },
     // 切换cd和歌词页面
     middleTouchstart(e) {
@@ -457,9 +457,6 @@ export default {
     getLyric() {
       getLyric(this.currentSong.mid).then(res => {
         this.lyric = new Lyric(Base64.decode(res.lyric), this.handleLyric);
-        if (this.lyric) {
-          this.lyric.play();
-        }
       });
     },
     // 监听播放歌词的回调函数

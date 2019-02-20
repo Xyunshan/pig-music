@@ -260,6 +260,7 @@ export default {
               .album-name,
               .singer-name,
               .public-time {
+                font-size: 13px;
                 width: 100%;
                 overflow: hidden;
                 text-overflow: ellipsis;
