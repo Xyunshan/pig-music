@@ -286,9 +286,9 @@ export default {
     progerssTouchend() {
       this.touch.initiated = false;
       this.$refs.audio.currentTime = this.currentTime;
-      // if (this.lyric) {
-      //   this.lyric.seek(this.currentTime * 1000);
-      // }
+      if (this.lyric) {
+        this.lyric.seek(this.currentTime * 1000);
+      }
     },
     // 设置进度条
     _offset(offsetWidth) {
@@ -304,9 +304,6 @@ export default {
         this.currentTime = audio.currentTime;
       }
       this._offset(offsetWidth);
-      if (this.lyric) {
-        this.lyric.seek(this.currentTime * 1000);
-      }
     },
     // 切换cd和歌词页面
     middleTouchstart(e) {
@@ -375,7 +372,10 @@ export default {
     },
     // 歌曲可以播放时
     ready() {
-      this.setplaying(true);
+      if (!this.songReady) {
+        this.lyric.play();
+        this.setplaying(true);
+      }
       this.songReady = true;
     },
     // 播放完成时
@@ -440,7 +440,9 @@ export default {
       audio.play();
     },
     togglePlaying() {
-      this.songReady ? this.setplaying(!this.playing) : this.setplaying(false);
+      if (this.songReady) {
+        this.setplaying(!this.playing);
+      }
       if (this.lyric) {
         this.lyric.togglePlay();
       }
@@ -492,12 +494,12 @@ export default {
         this.lyric.stop();
       }
       this.currentTime = 0;
-      setTimeout(() => {
-        this.getSongUrl();
-      }, 100);
-      this.getLyric();
-      this.setplaying(false);
+      this.getSongUrl();
+      this.$nextTick(() => {
+        this.getLyric();
+      });
       this.songReady = false;
+      this.setplaying(false);
     },
     // 监听播放暂停
     playing(newPlaying) {
